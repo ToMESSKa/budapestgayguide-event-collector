@@ -1,9 +1,7 @@
 import json
 import requests
 import re
-from flask import Flask
  
-app = Flask(__name__)
 
 facebook_links = json.loads(requests.get("http://localhost:8080/getvenuesfacebook").text)
 
