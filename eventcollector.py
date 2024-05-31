@@ -27,7 +27,7 @@ def find_events_of_venue_in_response_lines(key, trimmed_response_lines):
 def get_event_list_from_facebook_response_lines(facebook_links, key):
     event_list = []
     for link in facebook_links:
-        response = requests.get(link["facebook"] + '/upcoming_hosted_events', headers=headers)
+        response = requests.get(link["facebook"] + 'upcoming_hosted_events', headers=headers)
         response_lines = []
         for line in response.text.splitlines():
             if '"__typename":"Event"' in line:
