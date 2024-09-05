@@ -5,6 +5,8 @@ import re
 
 facebook_links = json.loads(requests.get("http://localhost:8080/getvenuesfacebook").text)
 
+print(facebook_links)
+
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
@@ -44,6 +46,13 @@ def trim_response_lines(response_lines, key):
         trimmed_response_lines = trimmed_response_lines[:trimmed_response_lines.rfind('</script>')]
         return trimmed_response_lines
 
+def find_venue_id_for_event(facebook_link):
+        print(facebook_link)
+        for item in facebook_links:
+            if item['facebook'] == facebook_link +"/":
+                return str(item['id'])
+        return None
+
 def create_event_details(event_list):
     event_details = []
     for venue in event_list:
@@ -53,6 +62,7 @@ def create_event_details(event_list):
                 new_event["name"] = event["node"]["node"]["name"]
                 new_event["url"] = event["node"]["node"]["url"]
                 new_event["id"] = event["node"]["node"]["id"]
+                new_event["venue_id"] = find_venue_id_for_event(event["node"]["node"]["event_creator"]["url"])
                 new_event["event_creator"] = event["node"]["node"]["event_creator"]["name"]
                 new_event["location"] = event["node"]["node"]["event_place"]["contextual_name"]
                 new_event['time'] = event["node"]["node"]['day_time_sentence']
@@ -63,8 +73,12 @@ def create_event_details(event_list):
 def get_all_events_from_facebook(facebook_links, key):
     event_list = get_event_list_from_facebook_response_lines(facebook_links, key)
     event_details = create_event_details(event_list)
-    print(event_details)
     return event_details
             
-get_all_events_from_facebook(facebook_links, 'edges')
+events = get_all_events_from_facebook(facebook_links, 'edges')
+
+url = "http://localhost:8080/getevents"
+
+x = requests.post(url, json=events)
+print(x)
 exit(0)
