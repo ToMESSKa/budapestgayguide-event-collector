@@ -29,7 +29,7 @@ def find_events_of_venue_in_response_lines(key, trimmed_response_lines):
 
 def get_event_list_from_facebook_response_lines(facebook_links, key):
     event_list = []
-    print('event list' + facebook_links)
+    print(facebook_links)
     for link in facebook_links:
         response = ""
         if link["facebook"] == 'https://www.facebook.com/magnumsauna/':
