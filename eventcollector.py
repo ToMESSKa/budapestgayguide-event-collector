@@ -91,6 +91,7 @@ def get_all_events_from_facebook(facebook_links, key):
             
 
 def main():
+    print("hello")
     events = get_all_events_from_facebook(facebook_links, 'edges')
     url = "https://budapestgayguide-backend.onrender.com/saveevents"
     x = requests.post(url, json=events)
