@@ -5,7 +5,7 @@ import re
 from eventcollectorselenium import find_events_for_private_page
  
 
-facebook_links = json.loads(requests.get("http://localhost:8080/getvenuesfacebook").text)
+facebook_links = json.loads(requests.get("https://budapestgayguide-backend.onrender.com/getvenuesfacebook").text)
 
 
 
@@ -89,10 +89,14 @@ def get_all_events_from_facebook(facebook_links, key):
     print(event_details)
     return event_details
             
-events = get_all_events_from_facebook(facebook_links, 'edges')
 
-url = "http://localhost:8080/saveevents"
+def main():
+    events = get_all_events_from_facebook(facebook_links, 'edges')
+    url = "https://budapestgayguide-backend.onrender.com/saveevents"
+    x = requests.post(url, json=events)
+    print(x)
+    exit(0)
+    
 
-x = requests.post(url, json=events)
-print(x)
-exit(0)
+if __name__ == "__main__":
+    main()
