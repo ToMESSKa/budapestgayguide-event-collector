@@ -9,7 +9,7 @@ import json
 import requests
 import re
 
-def find_events_for_private_page():
+def find_events_for_private_page(url):
 
     options = Options()
     options.add_argument("start-maximized")
@@ -20,7 +20,7 @@ def find_events_for_private_page():
     options.add_argument("--headless")
 
     # Path to chromedriver in the same folder as the script
-    driver_path = 'chromedriver'  # For macOS/Linux 
+    driver_path = '/usr/bin/chromedriver'  # For macOS/Linux 
     # driver_path = 'chromedriver.exe'  # For Windows
 
     # Create a Service object
@@ -30,11 +30,11 @@ def find_events_for_private_page():
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = "email"
-    password = "password"
+    email = "kovacstamastinder@gmail.com"
+    password = "Halcyon2"
 
     # URL of the Facebook page you want to access
-    facebook_page_url = "https://www.facebook.com/magnumsauna/upcoming_hosted_events"
+    facebook_page_url = url + "upcoming_hosted_events"
 
     # Go to Facebook login page
     driver.get("https://www.facebook.com/login")
