@@ -30,8 +30,8 @@ def find_events_for_private_page(url):
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = "email"
-    password = "password"
+    email = "kovacstamastinder@gmail.com"
+    password = "Halcyon2"
 
     # URL of the Facebook page you want to access
     facebook_page_url = url + "upcoming_hosted_events"
