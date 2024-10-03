@@ -20,7 +20,7 @@ def find_events_for_private_page(url):
     options.add_argument("--headless")
 
     # Path to chromedriver in the same folder as the script
-    driver_path = '/usr/bin/chromedriver'  # For macOS/Linux 
+    driver_path = 'chromedriver'  # For macOS/Linux 
     # driver_path = 'chromedriver.exe'  # For Windows
 
     # Create a Service object
@@ -30,8 +30,8 @@ def find_events_for_private_page(url):
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = "kovacstamastinder@gmail.com"
-    password = "Halcyon2"
+    email = "email"
+    password = "password"
 
     # URL of the Facebook page you want to access
     facebook_page_url = url + "upcoming_hosted_events"
