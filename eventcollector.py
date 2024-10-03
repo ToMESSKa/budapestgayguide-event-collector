@@ -1,6 +1,9 @@
 import json
 import requests
 import re
+import time
+
+import schedule
 
 from eventcollectorselenium import find_events_for_private_page
 from timeconverter import parse_date
@@ -69,7 +72,6 @@ def create_event_details(event_list):
     for venue in event_list:
         for event in venue:
             new_event = {}
-            print(event)
             if event["node"]["node"]["event_place"]["location"] == None or event["node"]["node"]["event_place"]["location"]['reverse_geocode']["city"] == "Budapest":
                 new_event["name"] = event["node"]["node"]["name"]
                 new_event["url"] = event["node"]["node"]["url"]
@@ -88,13 +90,23 @@ def get_all_events_from_facebook(facebook_links, key):
             
 
 def main():
-    events = get_all_events_from_facebook(facebook_links, 'edges')
-    ##url = "http://localhost:8080/saveevents"
-    url = "https://budapestgayguide-backend.onrender.com/saveevents"
-    x = requests.post(url, json=events)
-    print(x)
-    exit(0)
+    try:
+        print('start')
+        events = get_all_events_from_facebook(facebook_links, 'edges')
+        ##url = "http://localhost:8080/saveevents"
+        url = "https://budapestgayguide-backend.onrender.com/saveevents"
+        x = requests.post(url, json=events)
+        print(events)
+        print(x)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+
+schedule.every().hour.do(main)
     
 
 if __name__ == "__main__":
     main()
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
