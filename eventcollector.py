@@ -2,15 +2,20 @@ import json
 import requests
 import re
 import time
+import sys
+
+import os
 
 import schedule
 
 from eventcollectorselenium import find_events_for_private_page
 from timeconverter import parse_date
+
  
 facebook_links = json.loads(requests.get("https://budapestgayguide-backend.onrender.com/getvenuesfacebook").text)
 ##facebook_links = json.loads(requests.get("http://localhost:8080/getvenuesfacebook").text)
-
+##facebook_links = [{'facebook': 'https://www.facebook.com/Rainbow.TheCoffee.TheClub/', 'id': 14}] 
+##facebook_links = [ {'facebook': 'https://www.facebook.com/magnumsauna/', 'id': 15}, {'facebook': 'https://www.facebook.com/Rainbow.TheCoffee.TheClub/', 'id': 14}]
 
 
 headers = {
@@ -36,24 +41,21 @@ def find_events_of_venue_in_response_lines(key, trimmed_response_lines, facebook
     return results
 
 
-def get_event_list_from_facebook_response_lines(facebook_links, key):
+def get_event_list_from_facebook_response_lines(facebook_link, key):
     event_list = []
-    isPublic = True
-    for link in facebook_links:
-        response = ""
-        if link["facebook"] == 'https://www.facebook.com/magnumsauna/' or link["facebook"] == 'https://www.facebook.com/szauna69/':
-            response = find_events_for_private_page(link["facebook"])
-        else:
-            response = requests.get(link["facebook"] + 'upcoming_hosted_events', headers=headers).text
-        response_lines = []
-        for line in response.splitlines():
-            if '"__typename":"Event"' in line:
-                response_lines.append(line)
-        if response_lines != []:
-            trimmed_response_lines = trim_response_lines(response_lines, key)
-            events_of_venue = find_events_of_venue_in_response_lines(key, trimmed_response_lines,link["facebook"] )
-            event_list.extend(events_of_venue)
-    return event_list
+    events_of_venue =[]
+    if facebook_link["facebook"] == 'https://www.facebook.com/Rainbow.TheCoffee.TheClub/' or facebook_link["facebook"] == 'https://www.facebook.com/magnumsauna/' or facebook_link["facebook"] == 'https://www.facebook.com/szauna69/':
+        response = find_events_for_private_page(facebook_link["facebook"])
+    else:
+        response = requests.get(facebook_link["facebook"] + 'upcoming_hosted_events', headers=headers).text
+    response_lines = []
+    for line in response.splitlines():
+        if '"__typename":"Event"' in line:
+            response_lines.append(line)
+    if response_lines != []:
+        trimmed_response_lines = trim_response_lines(response_lines, key)
+        events_of_venue = find_events_of_venue_in_response_lines(key, trimmed_response_lines,facebook_link["facebook"] )
+    return events_of_venue
 
 
 def trim_response_lines(response_lines, key):
@@ -69,8 +71,8 @@ def find_venue_id_for_event(facebook_link):
 
 def create_event_details(event_list):
     event_details = []
-    for venue in event_list:
-        for event in venue:
+    for e in event_list:
+        for event in e:
             new_event = {}
             if event["node"]["node"]["event_place"]["location"] == None or event["node"]["node"]["event_place"]["location"]['reverse_geocode']["city"] == "Budapest":
                 new_event["name"] = event["node"]["node"]["name"]
@@ -83,30 +85,40 @@ def create_event_details(event_list):
     return event_details
 
 
-def get_all_events_from_facebook(facebook_links, key):
-    event_list = get_event_list_from_facebook_response_lines(facebook_links, key)
+def get_all_events_from_facebook(facebook_link, key):
+    event_list = get_event_list_from_facebook_response_lines(facebook_link, key)
     event_details = create_event_details(event_list)
     return event_details
             
+counter = 0
 
 def main():
     try:
-        print('start')
-        events = get_all_events_from_facebook(facebook_links, 'edges')
+        ##dont forget to set workers on heroku and install dependecies
+        event_list = []
+        print('counter:')
+        global counter 
+        counter = counter +1
+        print(counter)
+        for link in facebook_links:
+            events = get_all_events_from_facebook(link, 'edges')
+            print(link)
+            print(events)
+            for event in events:
+                event_list.append(event)
+        #events = get_all_events_from_facebook(facebook_links, 'edges')
         ##url = "http://localhost:8080/saveevents"
+        ##print(event_list)
         url = "https://budapestgayguide-backend.onrender.com/saveevents"
-        x = requests.post(url, json=events)
-        print(events)
+        x = requests.post(url, json=event_list)
         print(x)
     except Exception as e:
         print(f"An error occurred: {e}")
-    
-
-schedule.every().hour.do(main)
-    
+    ##sys.exit()
+        
 
 if __name__ == "__main__":
-    main()
+    schedule.every(2).hours.do(main) 
     while True:
         schedule.run_pending()
         time.sleep(1)

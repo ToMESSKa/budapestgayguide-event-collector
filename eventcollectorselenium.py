@@ -9,6 +9,9 @@ import json
 import requests
 import re
 
+import os
+from dotenv import load_dotenv
+
 def find_events_for_private_page(url):
 
     options = Options()
@@ -30,8 +33,8 @@ def find_events_for_private_page(url):
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = "kovacstamastinder@gmail.com"
-    password = "Halcyon2"
+    email = os.getenv('EMAIL')
+    password = os.getenv('PASSWORD')
 
     # URL of the Facebook page you want to access
     facebook_page_url = url + "upcoming_hosted_events"
@@ -40,7 +43,7 @@ def find_events_for_private_page(url):
     driver.get("https://www.facebook.com/login")
 
     # Allow time for the page to load
-    time.sleep(3)
+    time.sleep(5)
 
     # Find the email input and enter your email
     email_input = driver.find_element(By.ID, "email")

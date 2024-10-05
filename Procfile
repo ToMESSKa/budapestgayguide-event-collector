@@ -1,2 +1,1 @@
-web: python eventcollector.py
-worker: eventcollector.py 
+worker: python eventcollector.py
