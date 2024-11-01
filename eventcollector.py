@@ -45,7 +45,7 @@ def get_event_list_from_facebook_response_lines(facebook_link, key):
     event_list = []
     events_of_venue =[]
     if facebook_link["facebook"] == 'https://www.facebook.com/Rainbow.TheCoffee.TheClub/' or facebook_link["facebook"] == 'https://www.facebook.com/magnumsauna/' or facebook_link["facebook"] == 'https://www.facebook.com/szauna69/':
-        response = find_events_for_private_page(facebook_link["facebook"])
+        response = find_events_for_private_page(facebook_link["facebook"], 'upcoming_hosted_events' )
     else:
         response = requests.get(facebook_link["facebook"] + 'upcoming_hosted_events', headers=headers).text
     response_lines = []
@@ -96,10 +96,10 @@ def main():
     try:
         ##dont forget to set workers on heroku and install dependecies
         event_list = []
-        print('counter:')
-        global counter 
-        counter = counter +1
-        print(counter)
+        # print('counter:')
+        # global counter 
+        # counter = counter +1
+        # print(counter)
         for link in facebook_links:
             events = get_all_events_from_facebook(link, 'edges')
             print(link)
@@ -109,9 +109,9 @@ def main():
         #events = get_all_events_from_facebook(facebook_links, 'edges')
         ##url = "http://localhost:8080/saveevents"
         ##print(event_list)
-        url = "https://budapestgayguide-backend.onrender.com/saveevents"
-        x = requests.post(url, json=event_list)
-        print(x)
+        # url = "https://budapestgayguide-backend.onrender.com/saveevents"
+        # x = requests.post(url, json=event_list)
+        # print(x)
     except Exception as e:
         print(f"An error occurred: {e}")
     ##sys.exit()

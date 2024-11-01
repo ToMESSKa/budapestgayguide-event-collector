@@ -12,7 +12,7 @@ import re
 import os
 from dotenv import load_dotenv
 
-def find_events_for_private_page(url):
+def find_events_for_private_page(url, url_ending):
 
     options = Options()
     options.add_argument("start-maximized")
@@ -33,11 +33,11 @@ def find_events_for_private_page(url):
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = os.getenv('EMAIL')
-    password = os.getenv('PASSWORD')
+    email = "kovacstamastinder@gmail.com"
+    password = "Halcyon2"
 
     # URL of the Facebook page you want to access
-    facebook_page_url = url + "upcoming_hosted_events"
+    facebook_page_url = url + url_ending
 
     # Go to Facebook login page
     driver.get("https://www.facebook.com/login")

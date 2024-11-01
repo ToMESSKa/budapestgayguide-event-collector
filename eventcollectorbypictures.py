@@ -18,14 +18,20 @@ headers = {
     'Accept-Language': 'en-US,en;q=0.5',
 }
 
+# Function to download images
+def download_image(url, filename):
+    response = requests.get(url)
+    if response.status_code == 200:
+        file_path = os.path.join("downloaded_images", filename)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+    else:
+        print(f"Failed to download {url}")
+
 def get_pictures():
-    response = requests.get("https://www.facebook.com/garconsbudapest/photos_by", headers=headers).text
+    counter = 0
     response_lines = []
-    content = ""
-    with open("page_source.html", "w", encoding='utf-8') as f:
-        f.write(response)
-    with open("page_source.html", "r", encoding='utf-8') as f:
-        content = f.read()
+    content = find_events_for_private_page('https://www.facebook.com/people/coXx-Mens-Bar-Budapest/100066888414130/','?sk=photos_by')
     for line in content.splitlines():
         if '<link rel="preload" href="https://scontent.' in line:
             response_lines.append(line)
@@ -36,6 +42,8 @@ def get_pictures():
     image_urls = [link['href'].replace('&amp;', '&') for link in links]
     for url in image_urls:
         if "s206" in url:
-            print(url)
+            filename = f"facebook_picture{counter}.jpg"  # Change .jpg to the correct extension if needed
+            download_image(url, filename)
+            counter += 1  # Increment the counter for the next filename
 
 get_pictures()
