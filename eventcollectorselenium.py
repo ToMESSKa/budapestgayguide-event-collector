@@ -33,8 +33,8 @@ def find_events_for_private_page(url, url_ending):
     driver = Chrome(options=options, service=service)
 
     # Facebook credentials
-    email = "kovacstamastinder@gmail.com"
-    password = "Halcyon2"
+    email = "k**"
+    password = "**"
 
     # URL of the Facebook page you want to access
     facebook_page_url = url + url_ending
